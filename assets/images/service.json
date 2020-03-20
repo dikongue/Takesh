@@ -1,0 +1,104 @@
+[
+    {
+        "categorieserviceid": 1,
+        "code": "TAXI",
+        "nom": "Taxi de Ville",
+        "service": [
+            {
+                "serviceid": 1,
+        "code": "TACO",
+        "intitule": "Taxi Course",
+        "prix": 3500,
+        "prix_douala": 3500,
+        "prix_yaounde": 3000,
+        "temps" : "Facturé à l'heure"
+            },
+            {
+                "serviceid": 2,
+                "code": "TADE",
+                "intitule": "Taxi Dépot",
+                "prix": 3000,
+                "prix_douala": 3000,
+                "prix_yaounde": 2500,
+                "temps" : "Facturé à l'arrivé"
+            }
+        ]
+    },
+    {
+        "categorieserviceid": 2,
+        "code": "VIP",
+        "nom": "Transport Aéroport",
+        "service": [
+            {
+                "serviceid": 3,
+        "code": "TAAR",
+        "intitule": "Aéroport 4X4",
+        "prix": 15000,
+        "prix_douala": 15000,
+        "prix_yaounde": 17000,
+        "temps" : "Facturé à l'arrivé"
+            },
+            {
+                "serviceid": 4,
+                "code": "TAPV",
+                "intitule": "Aéroport berline",
+                "prix": 10000,
+                "prix_douala": 10000,
+                "prix_yaounde": 12000,
+                "temps" : "Facturé à l'arrivé"
+            },
+            {
+                "serviceid": 6,
+                "code": "TAPV",
+                "intitule": "Aéroport ville",
+                "prix": 5000,
+                "prix_douala": 5000,
+                "prix_yaounde": 8000,
+                "temps" : "Facturé à l'arrivé"
+            }
+        ]
+    },
+    {
+        "categorieserviceid": 3,
+        "code": "LOC",
+        "nom": "Location véhicule",
+        "service": [
+            {
+                "serviceid": 5,
+        "code": "BEV",
+        "intitule": "Berline en ville",
+        "prix": 40000,
+        "prix_douala": 40000,
+        "prix_yaounde": 40000,
+        "temps" : "Facturé par jour"
+            },
+            {
+                "serviceid": 7,
+        "code": "DHV",
+        "intitule": "Berline hors ville",
+        "prix": 60000,
+        "prix_douala": 60000,
+        "prix_yaounde": 60000,
+        "temps" : "Facturé par jour"
+            },
+            {
+                "serviceid": 8,
+        "code": "DEM",
+        "intitule": "4X4 en ville",
+        "prix": 50000,
+        "prix_douala": 50000,
+        "prix_yaounde": 50000,
+        "temps" : "Facturé par jour"
+            },
+            {
+                "serviceid": 9,
+        "code": "DEM",
+        "intitule": "4X4 hors ville",
+        "prix": 70000,
+        "prix_douala": 70000,
+        "prix_yaounde": 70000,
+        "temps" : "Facturé par jour"
+            }  
+        ]
+    }
+]
