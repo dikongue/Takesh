@@ -422,7 +422,7 @@ class NotificationUtil extends StatefulWidget {
 //                  }
                 });
               } else {
-                AppSharedPreferences().setOrderCreate(false);
+               // AppSharedPreferences().setOrderCreate(false);
                 ///               si on a pas de cmd valide
                 new DatabaseHelper()
                     .getCmdVal()
@@ -477,14 +477,14 @@ class NotificationUtil extends StatefulWidget {
                             _etat2 = true;
                             _etat3 = false;
                             _etat4 = true;
-                            cmdToSend = cmd;
-                            _showNotificationDriver();
+                           // cmdToSend = cmd;
+                           // _showNotificationDriver();
                           
                             //DatabaseHelper().clearCmdVal();
                             // stop the service to fetch orders
                             //AppSharedPreferences().setOrderCreatedTrue(false);
                             // remove the scan button at the home screen
-                            AppSharedPreferences().setOrderCreate(false);
+                           // AppSharedPreferences().setOrderCreate(false);
 //                          cmdlocal[j].commandeId
                           }
                         }

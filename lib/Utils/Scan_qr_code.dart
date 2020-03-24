@@ -23,12 +23,15 @@ class _ScanState extends State<ScanScreen> {
   List<CommandeLocal> _cmdLocal;
   RestDatasource api = new RestDatasource();
   Timer _timer;
+  String _cod;
+  String _reponce;
 //stripeAllozoe:pk_live_eo4MYvhD0gazKbeMzchjmrSU
   @override
   initState() {
     super.initState();
     _success = false;
     _error = false;
+    _reponce="FINALISER LA COMMANDE";
     AppSharedPreferences().getToken().then((String token1) {
       if (token1 != '') {
         _token = token1;
@@ -70,10 +73,10 @@ class _ScanState extends State<ScanScreen> {
                         splashColor: Colors.greenAccent,
                         onPressed: scan,
                         child: const Text('VALIDER PAR SCAN')),
-              ),/*
+              ),
               SizedBox(
                 height: 35.0,
-                child: Text(
+                child: _success? Container(): Text(
                   "ou",
                   textAlign: TextAlign.center,
                 ),
@@ -88,7 +91,7 @@ class _ScanState extends State<ScanScreen> {
                         splashColor: Colors.greenAccent,
                         onPressed: scanBouton,
                         child: const Text('VALIDER PAR BOUTON')),
-              ),*/
+              ),
               SizedBox(
                 height: 35.0,
               ),
@@ -188,12 +191,14 @@ class _ScanState extends State<ScanScreen> {
         for (int i = 0; i < _cmdLocal.length; i++) {
           print("Cmd matching");
           print(_cmdLocal[i].commandeId);
-          
-         api.updateCmdStatusToScan(_cmdLocal[i], _token).then((value){
+          _cod=
+            DateTime.now().hour.toString()+"T"
+            +DateTime.now().second.toString();
+         api.updateCmdStatusToScan12(_cmdLocal[i], _token, _cod).then((value){
             if(value!=null){
               Alert(
         context: context,
-        title: "FINALISER LA COMMANDE",
+        title:_reponce,
         content: Column(
           children: <Widget>[
             TextField(
@@ -210,18 +215,20 @@ class _ScanState extends State<ScanScreen> {
             onPressed: () {
               print("on a presser le boutton");
               print(_cmdLocal[i].commandeId);
-              api.getCmdScan(_token, _cmdLocal[i].commandeId).then((data){
-              print(data);
-              print("on a presser le boutton");
-              if(data!=null){
-                if(_code.text==data[0].rate_comment.toString()){
+
+             // api.getCmdScan(_token, _cmdLocal[i].commandeId).then((data){
+                print("123456878787");
+             // print(data);
+              print("on a presser le boutton125111**********");
+             // if(data!=null){
+                if(_code.text==_cod){
                   Navigator.of(context).pop();
                              setState(() {
             _error = false;
             _success = true;
             
             api
-                .updateCmdStatusToStart(_cmdLocal[i], _token)
+                .updateCmdStatusToStart12(_cmdLocal[i], _token,_cod)
                 .then((Commande cmd) {
               if (cmd != null) {
                 print("cmd mise a jour start");
@@ -241,9 +248,16 @@ class _ScanState extends State<ScanScreen> {
               }
             });
           });
+                }else{
+               //   Navigator.of(context).pop();
+                  setState(() {
+                  this._reponce="CODE INCORRECT!";
+                  //this.barcode =
+                    //  "code incorrect !!!";
+                });
                 }
-              }
-              });
+            //  }
+             // });
             },
             child: Text(
               "VALIDER",

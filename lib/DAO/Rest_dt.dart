@@ -298,7 +298,7 @@ class RestDatasource {
     }).catchError(
             (onError) => new Future.error(new Exception(onError.toString())));
   }
- Future <List<Commande>> getCmdScan(String token, int cmdId) {
+ Future <Commande> getCmdScan(String token, int cmdId) {
     return _netUtil
         .get("http://www.api.e-takesh.com:26525/api/commandes/" +
             
@@ -306,10 +306,12 @@ class RestDatasource {
             "?access_token="+
             token)
         .then(( res) {
-      if (res != null)
-        return  (res as List)
-            .map((item) => new Commande.fromJson(item))
-            .toList();
+      if (res != null){
+     String res1=res.toString();
+
+     return new   Commande.fromJson(res);
+      }
+         
       else
         return null;
     }).catchError(
@@ -817,7 +819,81 @@ Future<List<PrestatairePrestationOnline>> getPrestataires2(String token, String 
     }).catchError(
         (onError) => new Future.error(new Exception(onError.toString())));
   }
-
+ Future<Commande> updateCmdStatusToScan12(CommandeLocal cmd, String token,String _code) {
+    return _netUtil.put(CMD_URL + TOKEN1 + token, body: {
+      "commandeid": cmd.commandeId.toString(),
+      "montant": cmd.montant.toString(),
+      "date": cmd.date.toString(),
+      "date_debut": cmd.date_debut.toString(),
+      "date_fin": cmd.date_fin.toString(),
+      "date_acceptation": cmd.date_acceptation.toString(),
+      "date_prise_en_charge": cmd.date_prise_en_charge.toString(),
+      "rate_date": cmd.rate_date.toString(),
+      "status": "READ",
+      "position_prise_en_charge": cmd.position_prise_en_charge.toString(),
+      "position_destination": cmd.position_destination.toString(),
+      "code": cmd.code,
+      "distance_client_prestataire": cmd.distance_client_prestataire.toString(),
+      "duree_client_prestataire": cmd.duree_client_prestataire.toString(),
+      "position_priseId": cmd.position_priseId.toString(),
+      "position_destId": cmd.position_destId.toString(),
+      "rate_comment":_code,
+      "rate_value": cmd.rate_value.toString(),
+      "is_created": cmd.is_created.toString(),
+      "is_accepted": cmd.is_accepted.toString(),
+      "is_refused": cmd.is_refused.toString(),
+      "is_terminated": cmd.is_terminated.toString(),
+      "is_started": cmd.is_started.toString(),
+      "clientId": cmd.clientId.toString(),
+      "prestationId": cmd.prestationId.toString(),
+      "prestataireId": cmd.prestataireId.toString()
+    }).then((dynamic res) {
+      if (res != null) {
+        print("Update Cmd");
+        return Commande.fromJson(json.decode(res));
+      } else
+        return null;
+    }).catchError(
+        (onError) => new Future.error(new Exception(onError.toString())));
+  }
+  ///Modifie le status d'une commande pret a etre demarre
+  Future<Commande> updateCmdStatusToStart12(CommandeLocal cmd, String token, String _cod) {
+    return _netUtil.put(CMD_URL + TOKEN1 + token, body: {
+      "commandeid": cmd.commandeId.toString(),
+      "montant": cmd.montant.toString(),
+      "date": cmd.date,
+      "date_debut": cmd.date_debut,
+      "date_fin": cmd.date_fin,
+      "date_acceptation": cmd.date_acceptation,
+      "date_prise_en_charge": cmd.date_prise_en_charge,
+      "rate_date": cmd.rate_date,
+      "status": "TERMINATED",
+      "position_prise_en_charge": cmd.position_prise_en_charge,
+      "position_destination": cmd.position_destination,
+      "code": cmd.code,
+      "distance_client_prestataire": cmd.distance_client_prestataire,
+      "duree_client_prestataire": cmd.duree_client_prestataire,
+      "position_priseId": cmd.position_priseId,
+      "position_destId": cmd.position_destId,
+      "rate_comment": _cod,
+      "rate_value": cmd.rate_value.toString(),
+      "is_created": cmd.is_created.toString(),
+      "is_accepted": cmd.is_accepted.toString(),
+      "is_refused": cmd.is_refused.toString(),
+      "is_terminated": true.toString(),
+      "is_started": cmd.is_started.toString(),
+      "clientId": cmd.clientId.toString(),
+      "prestationId": cmd.prestationId.toString(),
+      "prestataireId": cmd.prestataireId.toString()
+    }).then((dynamic res) {
+      if (res != null) {
+        print("Update Cmd");
+        return Commande.fromJson(json.decode(res));
+      } else
+        return null;
+    }).catchError(
+        (onError) => new Future.error(new Exception(onError.toString())));
+  }
   ///Modifie le status d'une commande pret a etre demarre
   Future<Commande> updateCmdStatusToStart(CommandeLocal cmd, String token) {
     return _netUtil.put(CMD_URL + TOKEN1 + token, body: {

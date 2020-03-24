@@ -92,7 +92,7 @@ var alertStyle = AlertStyle(
       color: Colors.black,
     ),
   );
-
+ Completer<GoogleMapController> _controller = Completer();
   bool _serviceEnabled;
 //PermissionStatus _permissionGranted;
  LocationData _locationData;
@@ -167,10 +167,10 @@ var alertStyle = AlertStyle(
       }
     });
     //  update when user change profile
-    timer2 = Timer.periodic(Duration(seconds: 4), (Timer t) {
+    timer2 = Timer.periodic(Duration(seconds: 5), (Timer t) {
 
   AppSharedPreferences().isOrder().then((bool order) {
-      print("cmdTest " + order.toString());
+      print("etat de la commande " + order.toString());
       if (order == true) {
         setState(() {
           _isorder = true;
@@ -225,6 +225,7 @@ var alertStyle = AlertStyle(
     stateIndex = 0;
     
     //refresh();
+    //_onMapCreated(controler);
     super.initState();
 
   }
@@ -662,47 +663,37 @@ print("654321");
     print(first.countryName);
   }
 
-  Completer<GoogleMapController> _controller = Completer();
-/*
+  //Completer<GoogleMapController> _controller = Completer();
+
   void refresh() async {
 final center = await getUserLocation();
 print("Ma Position2 " + center.toString());
    mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-     target: center == null ? LatLng(0, 0) : center, zoom: 11.0)));
-  }*/
-  //void _onMapCreated(GoogleMapController controller) {
-//_controller.complete(controller);
-//mapController = controller;
-//refresh();
-// }
-void _updateMarker(token){
-
-    setState(() {
-    iSloading=true;  
-  });
-  api.getAllPrestataires(token).then((List<PrestataireOnline> prestataires) {
-   if (prestataires != null) {
-      for (int i = 0; i < prestataires.length; i++) {
-          if (prestataires[i].prestataires.status == "ONLINE" && prestataires[i].prestataires.etat==false) {
-          _idMarker.add(prestataires[i].prestataires.telephone);
-           }
-          }
-   }
-  });
+     target: center == null ? LatLng(0, 0) : center, zoom: 14.0)));
+  }
+void _onMapCreated(GoogleMapController controller) {
+_controller.complete(controller);
+mapController = controller;
+refresh();
+ }
+void _updateMarker1(token){
 if(_idMarker!=null){
    for(int i=0; i<_idMarker.length;i++){
      print(_idMarker[i]);
      setState(() {
        markers.remove(markers.firstWhere((Marker marker)=>marker.markerId.value ==_idMarker[i]));
      });
+   }
+   _idMarker=[];
      api.getAllPrestataires(token).then((list){
       if(list.isNotEmpty){
         for(int j=0;j<list.length;j++){
-          if(list[j].prestataires.status=="ONLINE" && list[j].prestataires.etat==false && list[j].prestataires.telephone.toString() ==_idMarker[i].toString()){
-              print(_idMarker[i].toString());
+          if(list[j].prestataires.status=="ONLINE" && list[j].prestataires.etat==false  ){
+            
               print(list[j].prestataires.telephone.toString() );
                setState(() {
                 prestaOnline = true;
+                 _idMarker.add(list[j].prestataires.telephone);
                 markers.add( new 
                   Marker(
                       markerId:
@@ -733,7 +724,7 @@ if(_idMarker!=null){
                 // iSloading=false;
               });
           }else{
-            if(list[j].prestataires.status=="ONLINE" && list[j].prestataires.etat==false && list[j].prestataires.telephone.toString() !=_idMarker[i].toString()){
+       /* if(list[j].prestataires.status=="ONLINE" && list[j].prestataires.etat==false && list[j].prestataires.telephone.toString() !=_idMarker[i].toString()){
                 
                 _idMarker.add(list[j].prestataires.telephone);
               print("new prestataire");
@@ -768,15 +759,123 @@ if(_idMarker!=null){
                 );
                 // iSloading=false;
               });
-            }
+            }*/
           }
-          setState(() {
-            iSloading=false;
-          });
         }
       }
      });
+   
+  //_idMarker=[];
+  }else{
+    print("pas de prestataire en ligne ...");
+   _getPrestataires(token1); 
+  }
+     AppSharedPreferences().isOrder().then((bool order) {
+       print("cmdTest " + order.toString());
+        if (order == true) {
+           setState(() {
+             _isorder = true;
+           });
+        }
+    });
+}
+void _updateMarker(token){
+    setState(() {
+    iSloading=true;  
+  });
+ 
+if(_idMarker!=null){
+   for(int i=0; i<_idMarker.length;i++){
+     print(_idMarker[i]);
+     setState(() {
+       markers.remove(markers.firstWhere((Marker marker)=>marker.markerId.value ==_idMarker[i]));
+     });
    }
+   _idMarker=[];
+     api.getAllPrestataires(token).then((list){
+      if(list.isNotEmpty){
+        for(int j=0;j<list.length;j++){
+          if(list[j].prestataires.status=="ONLINE" && list[j].prestataires.etat==false  ){
+            
+              print(list[j].prestataires.telephone.toString() );
+               setState(() {
+                prestaOnline = true;
+                 _idMarker.add(list[j].prestataires.telephone);
+                markers.add( new 
+                  Marker(
+                      markerId:
+                          MarkerId(list[j].prestataires.telephone),
+                      icon: _markerIcon,
+                      position: LatLng(
+                          list[j].prestataires.positions.latitude,
+                          list[j].prestataires.positions.longitude),
+                   onTap: () {
+                            _googleMapsServices
+                  .getDistanceTime(
+                      mylat,
+                      mylng,
+                      list[j].prestataires.positions.latitude,
+                      list[j].prestataires.positions.longitude)
+                    .then((DistanceTime datemine) {
+                     _showDetailPrestataire(list[j], datemine);
+                   });                     
+                            
+                          }
+                    /*  infoWindow: InfoWindow(
+                          title: list[j].prestataires.nom,
+                          snippet: "Voir les details",
+                         )
+                         */),
+                         
+                );
+                // iSloading=false;
+              });
+          }else{
+       /* if(list[j].prestataires.status=="ONLINE" && list[j].prestataires.etat==false && list[j].prestataires.telephone.toString() !=_idMarker[i].toString()){
+                
+                _idMarker.add(list[j].prestataires.telephone);
+              print("new prestataire");
+                setState(() {
+                prestaOnline = true;
+                markers.add( new 
+                  Marker(
+                      markerId:
+                          MarkerId(list[j].prestataires.telephone),
+                      icon: _markerIcon,
+                      position: LatLng(
+                          list[j].prestataires.positions.latitude,
+                          list[j].prestataires.positions.longitude),
+                         onTap: () {
+                            _googleMapsServices
+                  .getDistanceTime(
+                      mylat,
+                      mylng,
+                      list[j].prestataires.positions.latitude,
+                      list[j].prestataires.positions.longitude)
+                    .then((DistanceTime datemine) {
+                     _showDetailPrestataire(list[j], datemine);
+                   });                     
+                            
+                          }
+                      /*infoWindow: InfoWindow(
+                          title: list[j].prestataires.nom,
+                          snippet: "Voir les details",
+                         )*/
+                         ),
+                          
+                );
+                // iSloading=false;
+              });
+            }*/
+          }
+          
+        }
+        setState(() {
+            iSloading=false;
+          });
+      }
+     });
+   
   //_idMarker=[];
   }else{
     print("pas de prestataire en ligne ...");
@@ -1298,7 +1397,7 @@ if(_idMarker!=null){
         // if order was accepted by prestataire : we update the position of custumer
         if (_isorder) {
           timer3 = Timer.periodic(
-              Duration(seconds: 5), (Timer t) => _updatePosition());
+              Duration(seconds: 15), (Timer t) => _updatePosition());
         }
         DatabaseHelper().getClient().then((Client1 c) {
           if (c != null) {
@@ -1310,6 +1409,6 @@ if(_idMarker!=null){
       });
     }
         timer = Timer.periodic(
-            Duration(seconds: 10), (Timer t) => _updateMarker(token1));
+            Duration(seconds: 10), (Timer t) => _updateMarker1(token1));
   }
 }
